@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tweetapp.dao.UserDao;
 import com.tweetapp.model.User;
 import com.tweetapp.repository.UserRepository;
 
 @Component
+@Transactional
 public class UserDaoImpl implements UserDao {
 	@Autowired
 	UserRepository repository;
@@ -26,7 +28,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public User getUserByUsernameAndPassword(String username, String password) {
-		return repository.findByEmailAndPassword(username, password).orElse(null);
+		return repository.findByUsernameAndPassword(username, password);
 	}
 
 	@Override
@@ -37,5 +39,10 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public User updateUser(User user) {
 		return repository.save(user);
+	}
+
+	@Override
+	public boolean userExists(String username) {
+		return repository.existsById(username);
 	}
 }

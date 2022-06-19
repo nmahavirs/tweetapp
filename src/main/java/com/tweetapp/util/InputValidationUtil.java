@@ -89,7 +89,7 @@ public class InputValidationUtil {
 
 	public static Tweet getValidTweet(final User user) {
 		final Tweet tweet = new Tweet();
-		tweet.setUser(user);
+//		tweet.setUser(user);
 		
 		String input;
 		

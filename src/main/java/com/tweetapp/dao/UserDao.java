@@ -14,4 +14,6 @@ public interface UserDao {
 	public User addUser(User user);
 
 	public User updateUser(User user);
+	
+	public boolean userExists(String username);
 }

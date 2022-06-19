@@ -1,33 +1,25 @@
 package com.tweetapp.model;
 
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "users")
 public class User {
 	private String firstName;
 	private String lastName;
 	private String gender;
 	private Date dob;
 	@Id
+	private String loginId;
 	private String email;
 	private String password;
-	private boolean isLoggedIn;
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	List<Tweet> tweets;
-
-	@Override
-	public String toString() {
-		return "Username: @" + email.split("@")[0] + "\n" + "Name: " + firstName + " " + lastName + "\n";
-	}
 }

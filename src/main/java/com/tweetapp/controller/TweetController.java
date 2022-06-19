@@ -1,13 +1,15 @@
-package com.tweetapp.component;
+package com.tweetapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tweetapp.model.User;
 import com.tweetapp.service.TweetService;
 import com.tweetapp.util.InputValidationUtil;
 
 @Controller
+@RequestMapping("/api/v1.0/tweets")
 public class TweetController {
 	@Autowired
 	TweetService service;

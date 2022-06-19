@@ -18,36 +18,19 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User register(User user) {
-		if(getUser(user.getEmail()) != null ) {
-			throw new UserAlreadyExistsException("Username/Email already exists please try to Login or Register with different email/username");
+		if(dao.userExists(user.getLoginId())) {
+			throw new UserAlreadyExistsException("LoginId/Email already exists please Login or Register with different Email/LoginId");
 		}
-		user.setLoggedIn(true);
 		return dao.addUser(user);
 	}
 
 	@Override
 	public User login(String username, String password) {
 		User user = dao.getUserByUsernameAndPassword(username, password);
-
-		if (user != null) {
-			user.setLoggedIn(true);
-			user = dao.updateUser(user);
-			return user;
-		}
-
-		throw new UserNotFoundException("Unable to login! Please enter valid credentials or Register");
-	}
-
-	@Override
-	public boolean logout(String username) {
-		User user = getUser(username);
-
-		if (user != null && user.isLoggedIn()) {
-			user.setLoggedIn(false);
-			dao.updateUser(user);
-		}
-
-		return false;
+		if (user == null) {
+			throw new UserNotFoundException("Unable to login! Please enter valid credentials or Register");
+		}		
+		return user;
 	}
 
 	@Override

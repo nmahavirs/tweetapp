@@ -20,8 +20,8 @@ public class TweetDaoImpl implements TweetDao {
 	}
 
 	@Override
-	public List<Tweet> getTweetsByUserId(String userId) {
-		return repository.findbyUser(userId);
+	public List<Tweet> getTweetsByUserId(String username) {
+		return repository.findByUsername(username);
 	}
 
 	@Override
