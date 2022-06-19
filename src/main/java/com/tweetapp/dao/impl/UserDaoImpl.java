@@ -22,13 +22,13 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User getUser(String username) {
-		return repository.findById(username).orElse(null);
+	public List<User> getUsers(String username) {
+		return repository.findByEmailLike(username);
 	}
 
 	@Override
-	public User getUserByUsernameAndPassword(String username, String password) {
-		return repository.findByUsernameAndPassword(username, password);
+	public User getUser(String email) {
+		return repository.findById(email).orElse(null);
 	}
 
 	@Override

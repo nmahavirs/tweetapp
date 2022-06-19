@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tweetapp.model.User;
 import com.tweetapp.service.TweetService;
-import com.tweetapp.util.InputValidationUtil;
 
 @Controller
 @RequestMapping("/api/v1.0/tweets")
@@ -31,6 +30,6 @@ public class TweetController {
 	}
 	
 	public void postATweet(User user) {
-		service.postATweet(InputValidationUtil.getValidTweet(user));
+//		service.postATweet(user);
 	}
 }
