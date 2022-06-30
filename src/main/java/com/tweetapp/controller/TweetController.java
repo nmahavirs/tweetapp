@@ -2,6 +2,7 @@ package com.tweetapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tweetapp.model.User;
@@ -13,12 +14,14 @@ public class TweetController {
 	@Autowired
 	TweetService service;
 	
+	@GetMapping("/all")
 	public void displayAllTweets() {
 		System.out.println("\n---------");
 		System.out.println("All Tweets:");
 		System.out.println("-----------");
+		throw new ArrayIndexOutOfBoundsException("");
 		
-		service.viewAllTweets().forEach(System.out::println);
+//		service.viewAllTweets().forEach(System.out::println);
 	}
 	
 	public void displayMyTweets(String username) {

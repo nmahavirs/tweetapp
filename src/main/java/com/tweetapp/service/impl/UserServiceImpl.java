@@ -1,6 +1,7 @@
 package com.tweetapp.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,9 +9,8 @@ import org.springframework.stereotype.Service;
 import com.tweetapp.dao.UserDao;
 import com.tweetapp.exception.UserAlreadyExistsException;
 import com.tweetapp.exception.UserNotFoundException;
-import com.tweetapp.model.LoginRequest;
-import com.tweetapp.model.LoginResponse;
 import com.tweetapp.model.User;
+import com.tweetapp.model.response.LoginResponse;
 import com.tweetapp.service.UserService;
 import com.tweetapp.util.JwtTokenUtil;
 
@@ -18,7 +18,7 @@ import com.tweetapp.util.JwtTokenUtil;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	UserDao dao;
-	
+
 	@Autowired
 	JwtTokenUtil jwtTokenUtil;
 
@@ -28,28 +28,35 @@ public class UserServiceImpl implements UserService {
 			throw new UserAlreadyExistsException(
 					"LoginId/Email already exists please Login or Register with different Email/LoginId");
 		}
-		return dao.addUser(user);
+		user = dao.addUser(user);
+		user.setPassword("");
+		return user;
 	}
 
 	@Override
 	public LoginResponse login(String username, String password) {
 		User user = dao.getUser(username);
 		if (user != null && password.equals(user.getPassword())) {
-			String authToken = jwtTokenUtil.generateToken(new LoginRequest(username, password));
+//			String authToken = jwtTokenUtil.generateToken(new LoginRequest(username, password));
 			return new LoginResponse(user.getFirstName(), user.getLastName(), user.getGender(), user.getDob(),
-					user.getEmail(), authToken);
+					user.getEmail(), "");
 		}
 		throw new UserNotFoundException("Unable to login! Please enter valid credentials or Register");
 	}
 
 	@Override
 	public User updatePassword(User user) {
-		return dao.updateUser(user);
+		User updatedUser = dao.getUser(user.getEmail());
+		if (null == updatedUser) {
+			throw new UserNotFoundException("Unable to change password, email doesn't exist!");
+		}
+		updatedUser.setPassword(user.getPassword());
+		return dao.updateUser(updatedUser);
 	}
 
 	@Override
 	public List<User> viewAllUsers() {
-		List<User> users = dao.getAllUsers();
+		List<User> users = dao.getAllUsers().stream().peek(user -> user.setPassword("")).collect(Collectors.toList());
 		if (users.isEmpty()) {
 			throw new UserNotFoundException("No users found for the Application");
 		}

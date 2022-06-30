@@ -8,6 +8,9 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "users")
+@JsonInclude(Include.NON_EMPTY)
 public class User {
 	@NotEmpty(message = "First Name must not be empty")
 	@Pattern(regexp = "^[a-zA-Z][a-zA-Z ]*$", message = "First Name is Invalid")

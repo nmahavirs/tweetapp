@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
 
-import com.tweetapp.model.LoginRequest;
+import com.tweetapp.model.request.LoginRequest;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
