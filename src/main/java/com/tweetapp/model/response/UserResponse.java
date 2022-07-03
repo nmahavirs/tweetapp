@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
-public class LoginResponse {
+public class UserResponse {
 	private String firstName;
 	private String lastName;
 	private String gender;

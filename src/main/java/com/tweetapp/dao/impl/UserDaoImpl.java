@@ -32,12 +32,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User addUser(User user) {
-		return repository.save(user);
-	}
-
-	@Override
-	public User updateUser(User user) {
+	public User saveUser(User user) {
 		return repository.save(user);
 	}
 

@@ -8,9 +8,17 @@ import com.tweetapp.model.Tweet;
 
 @Service
 public interface TweetService {
-	public void postATweet(Tweet tweet);
-	
+	public Tweet postNewTweet(Tweet tweet);
+
 	public List<Tweet> viewAllTweets();
-	
+
 	public List<Tweet> viewMyTweets(String username);
+
+	public Tweet updateTweet(Tweet tweet);
+
+	public void deleteTweet(String id);
+
+	public Tweet likeTweet(Tweet tweet);
+
+	public Tweet replyTweet(Tweet tweet);
 }
