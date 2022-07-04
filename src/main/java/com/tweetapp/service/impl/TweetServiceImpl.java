@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.tweetapp.dao.TweetDao;
 import com.tweetapp.dao.UserDao;
 import com.tweetapp.exception.NotFoundException;
+import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.service.TweetService;
 
@@ -49,10 +50,12 @@ public class TweetServiceImpl implements TweetService {
 
 	@Override
 	public Tweet updateTweet(Tweet tweet) {
-		if (!tweetDao.tweetExists(tweet.getId())) {
+		Tweet updatedTweet = tweetDao.getTweet(tweet.getId());
+		if (null == updatedTweet) {
 			throw new NotFoundException("Unable to update the tweet, unknown tweet!");
 		}
-		return tweetDao.saveTweet(tweet);
+		updatedTweet.setText(tweet.getText());
+		return tweetDao.saveTweet(updatedTweet);
 	}
 
 	@Override
@@ -64,19 +67,22 @@ public class TweetServiceImpl implements TweetService {
 	}
 
 	@Override
-	public Tweet likeTweet(Tweet tweet) {
-		if (!tweetDao.tweetExists(tweet.getId())) {
+	public Tweet likeTweet(String id) {
+		Tweet updatedTweet = tweetDao.getTweet(id);
+		if (null == updatedTweet) {
 			throw new NotFoundException("Unable to like the tweet, unknown tweet!");
 		}
-		tweet.setLikes(tweet.getLikes() + 1);
-		return tweetDao.saveTweet(tweet);
+		updatedTweet.setLikes(updatedTweet.getLikes() + 1);
+		return tweetDao.saveTweet(updatedTweet);
 	}
 
 	@Override
-	public Tweet replyTweet(Tweet tweet) {
-		if (!tweetDao.tweetExists(tweet.getId())) {
+	public Tweet replyTweet(Reply reply, String id) {
+		Tweet updatedTweet = tweetDao.getTweet(id);
+		if (null == updatedTweet) {
 			throw new NotFoundException("Unable to reply the tweet, unknown tweet!");
 		}
-		return tweetDao.saveTweet(tweet);
+		updatedTweet.getReplies().add(reply);
+		return tweetDao.saveTweet(updatedTweet);
 	}
 }

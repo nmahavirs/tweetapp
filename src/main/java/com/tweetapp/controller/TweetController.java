@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.model.response.APIResponse;
 import com.tweetapp.service.TweetService;
@@ -40,7 +41,8 @@ public class TweetController {
 	@GetMapping("/{username}")
 	public ResponseEntity<APIResponse> getAllTweetsOfUser(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username) {
-		APIResponse response = new APIResponse(service.viewMyTweets(username), "User tweets retrieved successfully.", null);
+		APIResponse response = new APIResponse(service.viewMyTweets(username), "User tweets retrieved successfully.",
+				null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
@@ -83,16 +85,19 @@ public class TweetController {
 	@PutMapping("/{username}/like/{id}")
 	public ResponseEntity<APIResponse> likeTweet(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username,
-			@PathVariable("id") String id, @Valid @RequestBody Tweet tweet) {
-		APIResponse response = new APIResponse(service.likeTweet(tweet), "Updated like for tweet successfully.", null);
+			@PathVariable("id") String id) {
+		APIResponse response = new APIResponse(service.likeTweet(id), "Updated like for tweet successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/{username}/reply/{id}")
 	public ResponseEntity<APIResponse> replyTweet(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username,
-			@PathVariable("id") String id, @Valid @RequestBody Tweet tweet) {
-		APIResponse response = new APIResponse(service.replyTweet(tweet), "Updated reply to tweet successfully.", null);
+			@PathVariable("id") String id, @Valid @RequestBody Reply reply) {
+		reply.setUsername(username);
+		reply.setTimestamp(LocalDateTime.now());
+		APIResponse response = new APIResponse(service.replyTweet(reply, id), "Updated reply to tweet successfully.",
+				null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 }
