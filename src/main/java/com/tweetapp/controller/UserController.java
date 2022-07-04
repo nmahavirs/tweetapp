@@ -29,26 +29,26 @@ public class UserController {
 
 	@PostMapping("/register")
 	public ResponseEntity<APIResponse> registerAsNewUser(@Valid @RequestBody User user) {
-		APIResponse response = new APIResponse(userService.register(user), null, null);
+		APIResponse response = new APIResponse(userService.register(user), "User registered successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<APIResponse> login(@Valid @RequestBody LoginRequest request) {
-		APIResponse response = new APIResponse(userService.login(request.getUsername(), request.getPassword()), null,
-				null);
+		APIResponse response = new APIResponse(userService.login(request.getUsername(), request.getPassword()),
+				"User logged in successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/users/all")
 	public ResponseEntity<APIResponse> getAllUsers() {
-		APIResponse response = new APIResponse(userService.viewAllUsers(), null, null);
+		APIResponse response = new APIResponse(userService.viewAllUsers(), "Users retrieved successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/user/search/{username}")
 	public ResponseEntity<APIResponse> searchByUsername(@PathVariable("username") String username) {
-		APIResponse response = new APIResponse(userService.searchByUsername(username), null, null);
+		APIResponse response = new APIResponse(userService.searchByUsername(username), "Users by username retrieved successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
@@ -58,7 +58,7 @@ public class UserController {
 		User user = new User();
 		user.setEmail(username);
 		user.setPassword(request.getPassword());
-		APIResponse response = new APIResponse(userService.updatePassword(user), null, null);
+		APIResponse response = new APIResponse(userService.updatePassword(user), "Updated password successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 }

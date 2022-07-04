@@ -6,9 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,20 +39,19 @@ public class UserServiceImpl implements UserService {
 					"LoginId/Email already exists please Login or Register with different Email/LoginId");
 		}
 		user = dao.saveUser(user);
-		String authToken = authenticate(user.getEmail(), user.getPassword());
 		return new UserResponse(user.getFirstName(), user.getLastName(), user.getGender(), user.getDob(),
-				user.getEmail(), authToken);
+				user.getEmail(), null);
 	}
 
 	@Override
 	public UserResponse login(String username, String password) {
 		User user = dao.getUser(username);
 		if (user != null && password.equals(user.getPassword())) {
-			String authToken = authenticate(username, password);
+			String authToken = jwtTokenService.generateToken(username);// authenticate(username, password);
 			return new UserResponse(user.getFirstName(), user.getLastName(), user.getGender(), user.getDob(),
 					user.getEmail(), authToken);
 		}
-		throw new NotFoundException("Unable to login! Please enter valid credentials or Register");
+		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to login! Please enter valid credentials or Register");
 	}
 
 	@Override
@@ -83,21 +79,22 @@ public class UserServiceImpl implements UserService {
 	public List<User> searchByUsername(String username) {
 		List<User> users = dao.getUsers(username).stream().peek(user -> user.setPassword(""))
 				.collect(Collectors.toList());
-		;
 		if (users.isEmpty()) {
 			throw new NotFoundException("No users found for the username");
 		}
 		return users;
 	}
 
-	private String authenticate(String username, String password) {
-		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-		} catch (final BadCredentialsException ex) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please Enter Valid Credentials");
-		}
-
-		final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
-		return jwtTokenService.generateToken(userDetails.getUsername());
-	}
+	/*
+	 * private String authenticate(String username, String password) { try {
+	 * authenticationManager.authenticate(new
+	 * UsernamePasswordAuthenticationToken(username, password)); } catch (final
+	 * BadCredentialsException ex) { throw new
+	 * ResponseStatusException(HttpStatus.UNAUTHORIZED,
+	 * "Please Enter Valid Credentials"); }
+	 * 
+	 * final UserDetails userDetails =
+	 * jwtUserDetailsService.loadUserByUsername(username); return
+	 * jwtTokenService.generateToken(userDetails.getUsername()); }
+	 */
 }

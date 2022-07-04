@@ -1,9 +1,8 @@
 package com.tweetapp.service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +20,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(final String username) {
 		com.tweetapp.model.User user = userRepository.findById(username)
 				.orElseThrow(() -> new NotFoundException("User " + username + " not found"));
-		return new User(username, user.getPassword(),
-				Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+		return new User(username, user.getPassword(), new ArrayList<>());
+//				Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
 	}
 }

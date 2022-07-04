@@ -33,14 +33,14 @@ public class TweetController {
 
 	@GetMapping("/all")
 	public ResponseEntity<APIResponse> getAllTweets() {
-		APIResponse response = new APIResponse(service.viewAllTweets(), null, null);
+		APIResponse response = new APIResponse(service.viewAllTweets(), "All tweets retrieved successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}")
 	public ResponseEntity<APIResponse> getAllTweetsOfUser(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username) {
-		APIResponse response = new APIResponse(service.viewMyTweets(username), null, null);
+		APIResponse response = new APIResponse(service.viewMyTweets(username), "User tweets retrieved successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
@@ -52,7 +52,7 @@ public class TweetController {
 		tweet.setUsername(username);
 		tweet.setTimestamp(LocalDateTime.now());
 		tweet.setReplies(new ArrayList<>());
-		APIResponse response = new APIResponse(service.postNewTweet(tweet), null, null);
+		APIResponse response = new APIResponse(service.postNewTweet(tweet), "Tweet posted successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.CREATED);
 	}
 
@@ -67,7 +67,7 @@ public class TweetController {
 		tweet.setId(id);
 		tweet.setUsername(username);
 		tweet.setTimestamp(LocalDateTime.now());
-		APIResponse response = new APIResponse(service.updateTweet(tweet), null, null);
+		APIResponse response = new APIResponse(service.updateTweet(tweet), "Tweet updated successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.CREATED);
 	}
 
@@ -76,7 +76,7 @@ public class TweetController {
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username,
 			@PathVariable("id") String id) {
 		service.deleteTweet(id);
-		APIResponse response = new APIResponse("Tweet deleted successfully!", null, null);
+		APIResponse response = new APIResponse(null, "Tweet deleted successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
@@ -84,7 +84,7 @@ public class TweetController {
 	public ResponseEntity<APIResponse> likeTweet(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username,
 			@PathVariable("id") String id, @Valid @RequestBody Tweet tweet) {
-		APIResponse response = new APIResponse(service.likeTweet(tweet), null, null);
+		APIResponse response = new APIResponse(service.likeTweet(tweet), "Updated like for tweet successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
@@ -92,7 +92,7 @@ public class TweetController {
 	public ResponseEntity<APIResponse> replyTweet(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username,
 			@PathVariable("id") String id, @Valid @RequestBody Tweet tweet) {
-		APIResponse response = new APIResponse(service.replyTweet(tweet), null, null);
+		APIResponse response = new APIResponse(service.replyTweet(tweet), "Updated reply to tweet successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 }
