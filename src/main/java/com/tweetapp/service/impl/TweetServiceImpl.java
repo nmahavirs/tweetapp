@@ -82,7 +82,11 @@ public class TweetServiceImpl implements TweetService {
 		if (null == updatedTweet) {
 			throw new NotFoundException("Unable to reply the tweet, unknown tweet!");
 		}
-		updatedTweet.getReplies().add(reply);
+		List<Reply> replies = updatedTweet.getReplies();
+		if (replies != null) {
+			replies.add(reply);
+			updatedTweet.setReplies(replies);
+		}
 		return tweetDao.saveTweet(updatedTweet);
 	}
 }
