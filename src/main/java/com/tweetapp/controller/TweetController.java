@@ -79,8 +79,7 @@ public class TweetController {
 	public ResponseEntity<APIResponse> deleteTweet(
 			@Email(message = "Please provide a valid username") @PathVariable("username") String username,
 			@PathVariable("id") String id) {
-		service.deleteTweet(id);
-		APIResponse response = new APIResponse(null, "Tweet deleted successfully.", null);
+		APIResponse response = new APIResponse(service.deleteTweet(id), "Tweet deleted successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 

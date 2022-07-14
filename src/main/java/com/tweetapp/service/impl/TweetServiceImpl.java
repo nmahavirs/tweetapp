@@ -59,11 +59,13 @@ public class TweetServiceImpl implements TweetService {
 	}
 
 	@Override
-	public void deleteTweet(String id) {
+	public Tweet deleteTweet(String id) {
 		if (!tweetDao.tweetExists(id)) {
 			throw new NotFoundException("Unable to delete the tweet, unknown tweet!");
 		}
+		Tweet deletedTweet = tweetDao.getTweet(id);
 		tweetDao.deleteTweet(id);
+		return deletedTweet;
 	}
 
 	@Override

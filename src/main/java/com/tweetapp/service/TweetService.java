@@ -17,7 +17,7 @@ public interface TweetService {
 
 	public Tweet updateTweet(Tweet tweet);
 
-	public void deleteTweet(String id);
+	public Tweet deleteTweet(String id);
 
 	public Tweet likeTweet(String id);
 
