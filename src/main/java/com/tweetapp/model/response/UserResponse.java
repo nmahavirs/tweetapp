@@ -17,5 +17,5 @@ public class UserResponse {
 	private String gender;
 	private String dob;
 	private String email;
-	private String authToken;
+	private String accessToken;
 }

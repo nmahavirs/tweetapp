@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<APIResponse> handleValidationExceptions(ResponseStatusException exception) {
 		return new ResponseEntity<APIResponse>(new APIResponse(null, exception.getReason(), null),
-				HttpStatus.UNAUTHORIZED);
+				exception.getStatus());
 	}
 
 	@ExceptionHandler(Exception.class)

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,7 +14,6 @@ import com.tweetapp.exception.NotFoundException;
 import com.tweetapp.model.User;
 import com.tweetapp.model.response.UserResponse;
 import com.tweetapp.service.JwtTokenService;
-import com.tweetapp.service.JwtUserDetailsService;
 import com.tweetapp.service.UserService;
 
 @Service
@@ -25,12 +23,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	JwtTokenService jwtTokenService;
-
-	@Autowired
-	AuthenticationManager authenticationManager;
-
-	@Autowired
-	JwtUserDetailsService jwtUserDetailsService;
 
 	@Override
 	public UserResponse register(User user) {
@@ -47,11 +39,12 @@ public class UserServiceImpl implements UserService {
 	public UserResponse login(String username, String password) {
 		User user = dao.getUser(username);
 		if (user != null && password.equals(user.getPassword())) {
-			String authToken = jwtTokenService.generateToken(username);// authenticate(username, password);
+			String accessToken = jwtTokenService.generateAcccessToken(username);
 			return new UserResponse(user.getFirstName(), user.getLastName(), user.getGender(), user.getDob(),
-					user.getEmail(), authToken);
+					user.getEmail(), accessToken);
 		}
-		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to login! Please enter valid credentials or Register");
+		throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+				"Unable to login! Please enter valid credentials or Register");
 	}
 
 	@Override
@@ -85,16 +78,14 @@ public class UserServiceImpl implements UserService {
 		return users;
 	}
 
-	/*
-	 * private String authenticate(String username, String password) { try {
-	 * authenticationManager.authenticate(new
-	 * UsernamePasswordAuthenticationToken(username, password)); } catch (final
-	 * BadCredentialsException ex) { throw new
-	 * ResponseStatusException(HttpStatus.UNAUTHORIZED,
-	 * "Please Enter Valid Credentials"); }
-	 * 
-	 * final UserDetails userDetails =
-	 * jwtUserDetailsService.loadUserByUsername(username); return
-	 * jwtTokenService.generateToken(userDetails.getUsername()); }
-	 */
+	@Override
+	public UserResponse refreshLogin(String username) {
+		if (username != null && dao.userExists(username)) {
+			String accessToken = jwtTokenService.generateAcccessToken(username);
+			UserResponse userResponse = new UserResponse();
+			userResponse.setAccessToken(accessToken);
+			return userResponse;
+		}
+		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unable to refresh login, Please login again.");
+	}
 }

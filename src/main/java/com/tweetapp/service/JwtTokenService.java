@@ -16,16 +16,22 @@ public class JwtTokenService {
 	private final Algorithm hmac512;
 	private final JWTVerifier verifier;
 
-	public static final long JWT_TOKEN_VALIDITY = 30 * 60 * 1000;
+	public static final long ACCESS_TOKEN_VALIDITY = 30 * 60 * 1000;
+	public static final long REFRESH_TOKEN_VALIDITY = 24 * 60 * 60 * 1000;
 
 	public JwtTokenService(@Value("${jwt.secret}") final String secret) {
 		this.hmac512 = Algorithm.HMAC512(secret);
 		this.verifier = JWT.require(this.hmac512).build();
 	}
 
-	public String generateToken(final String username) {
+	public String generateAcccessToken(final String username) {
 		return JWT.create().withSubject(username)
-				.withExpiresAt(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY)).sign(this.hmac512);
+				.withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY)).sign(this.hmac512);
+	}
+
+	public String generateRefreshToken(final String username) {
+		return JWT.create().withSubject(username)
+				.withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY)).sign(this.hmac512);
 	}
 
 	public String validateTokenAndGetUsername(final String token) {

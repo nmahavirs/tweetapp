@@ -4,8 +4,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +22,7 @@ import com.tweetapp.model.User;
 import com.tweetapp.model.request.LoginRequest;
 import com.tweetapp.model.request.PasswordRequest;
 import com.tweetapp.model.response.APIResponse;
+import com.tweetapp.service.JwtTokenService;
 import com.tweetapp.service.UserService;
 
 @RestController
@@ -28,6 +32,9 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	JwtTokenService jwtTokenService;
+
 	@PostMapping("/register")
 	public ResponseEntity<APIResponse> registerAsNewUser(@Valid @RequestBody User user) {
 		APIResponse response = new APIResponse(userService.register(user), "User registered successfully.", null);
@@ -36,9 +43,11 @@ public class UserController {
 
 	@PostMapping("/login")
 	public ResponseEntity<APIResponse> login(@Valid @RequestBody LoginRequest request) {
-		APIResponse response = new APIResponse(userService.login(request.getUsername(), request.getPassword()),
+		String username = request.getUsername();
+		APIResponse response = new APIResponse(userService.login(username, request.getPassword()),
 				"User logged in successfully.", null);
-		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, getRefreshTokenCookie(username).toString())
+				.body(response);
 	}
 
 	@GetMapping("/users/all")
@@ -49,7 +58,8 @@ public class UserController {
 
 	@GetMapping("/user/search/{username}")
 	public ResponseEntity<APIResponse> searchByUsername(@PathVariable("username") String username) {
-		APIResponse response = new APIResponse(userService.searchByUsername(username), "Users by username retrieved successfully.", null);
+		APIResponse response = new APIResponse(userService.searchByUsername(username),
+				"Users by username retrieved successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
 	}
 
@@ -59,7 +69,21 @@ public class UserController {
 		User user = new User();
 		user.setEmail(username);
 		user.setPassword(request.getPassword());
-		APIResponse response = new APIResponse(userService.updatePassword(user), "Updated password successfully.", null);
+		APIResponse response = new APIResponse(userService.updatePassword(user), "Updated password successfully.",
+				null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.OK);
+	}
+
+	@GetMapping("/refresh")
+	public ResponseEntity<APIResponse> refreshAccessToken(@CookieValue(value = "jwt", defaultValue = "") String jwtCookie) {
+		String username = jwtTokenService.validateTokenAndGetUsername(jwtCookie);// .getValue());
+		APIResponse response = new APIResponse(userService.refreshLogin(username),
+				"Access token refreshed successfully.", null);
+		return ResponseEntity.ok(response);
+	}
+
+	private ResponseCookie getRefreshTokenCookie(String username) {
+		return ResponseCookie.from("jwt", jwtTokenService.generateRefreshToken(username)).httpOnly(true)
+				.maxAge(24 * 60 * 60).sameSite("none").build();
 	}
 }

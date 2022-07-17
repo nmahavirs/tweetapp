@@ -15,4 +15,6 @@ public interface UserService {
 	public List<User> viewAllUsers();
 
 	public List<User> searchByUsername(String username);
+	
+	public UserResponse refreshLogin(String username);
 }
