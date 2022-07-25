@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
 import com.tweetapp.model.response.APIResponse;
+import com.tweetapp.service.TweetProducerService;
 import com.tweetapp.service.TweetService;
 
 @Controller
@@ -33,6 +34,9 @@ import com.tweetapp.service.TweetService;
 public class TweetController {
 	@Autowired
 	TweetService service;
+	
+	@Autowired
+	TweetProducerService producerService; 
 
 	@GetMapping("/all")
 	public ResponseEntity<APIResponse> getAllTweets() {
@@ -56,6 +60,7 @@ public class TweetController {
 		tweet.setUsername(username);
 		tweet.setTimestamp(LocalDateTime.now());
 		tweet.setReplies(new ArrayList<>());
+		producerService.produceTweet(tweet);
 		APIResponse response = new APIResponse(service.postNewTweet(tweet), "Tweet posted successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.CREATED);
 	}
