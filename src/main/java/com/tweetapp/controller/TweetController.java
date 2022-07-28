@@ -61,7 +61,7 @@ public class TweetController {
 		tweet.setUsername(username);
 		tweet.setTimestamp(LocalDateTime.now());
 		tweet.setReplies(new ArrayList<>());
-		producerService.sendMessage(tweet);
+		//producerService.sendMessage(tweet);
 		APIResponse response = new APIResponse(service.postNewTweet(tweet), "Tweet posted successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.CREATED);
 	}
