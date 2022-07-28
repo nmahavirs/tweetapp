@@ -1,13 +1,13 @@
 package com.tweetapp.exception;
 
-public class UserNotFoundException extends RuntimeException {
+public class AlreadyExistsException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3575530557825760740L;
 
-	public UserNotFoundException(String msg) {
+	public AlreadyExistsException(String msg) {
 		super(msg);
 	}
 }

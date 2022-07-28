@@ -20,12 +20,27 @@ public class TweetDaoImpl implements TweetDao {
 	}
 
 	@Override
-	public List<Tweet> getTweetsByUserId(String userId) {
-		return repository.findbyUser(userId);
+	public List<Tweet> getTweetsByUsername(String username) {
+		return repository.findByUsername(username);
 	}
 
 	@Override
-	public Tweet postAtweet(Tweet tweet) {
+	public Tweet saveTweet(Tweet tweet) {
 		return repository.save(tweet);
+	}
+
+	@Override
+	public boolean tweetExists(String id) {
+		return repository.existsById(id);
+	}
+
+	@Override
+	public void deleteTweet(String id) {
+		repository.deleteById(id);
+	}
+
+	@Override
+	public Tweet getTweet(String id) {
+		return repository.findById(id).orElse(null);
 	}
 }
