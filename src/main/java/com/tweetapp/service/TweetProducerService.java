@@ -1,7 +1,5 @@
 package com.tweetapp.service;
 
-import java.util.concurrent.ExecutionException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -10,17 +8,12 @@ import com.tweetapp.model.Tweet;
 
 @Service
 public class TweetProducerService {
+	private static final String TOPIC = "tweets";
 
 	@Autowired
 	private KafkaTemplate<String, Tweet> kafkaTemplate;
 
-	public void produceTweet(Tweet tweet) {
-//		try {
-			kafkaTemplate.send("tweet-topic", tweet.getId(), tweet);//.get().getProducerRecord().value()
-//					.equals(tweet);
-		/*} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}*/
-//		return false;
+	public void sendMessage(Tweet tweet) {
+		this.kafkaTemplate.send(TOPIC, tweet);
 	}
 }

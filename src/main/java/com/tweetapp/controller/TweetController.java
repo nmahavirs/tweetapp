@@ -10,7 +10,6 @@ import javax.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.tweetapp.model.Reply;
 import com.tweetapp.model.Tweet;
@@ -27,16 +27,17 @@ import com.tweetapp.model.response.APIResponse;
 import com.tweetapp.service.TweetProducerService;
 import com.tweetapp.service.TweetService;
 
-@Controller
+@RestController
 @Validated
 @RequestMapping("/api/v1.0/tweets")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = { "http://localhost:3000",
+		"http://elasticbeanstalk-us-east-1-911861301997.s3-website-us-east-1.amazonaws.com" })
 public class TweetController {
 	@Autowired
 	TweetService service;
-	
+
 	@Autowired
-	TweetProducerService producerService; 
+	TweetProducerService producerService;
 
 	@GetMapping("/all")
 	public ResponseEntity<APIResponse> getAllTweets() {
@@ -60,7 +61,7 @@ public class TweetController {
 		tweet.setUsername(username);
 		tweet.setTimestamp(LocalDateTime.now());
 		tweet.setReplies(new ArrayList<>());
-		producerService.produceTweet(tweet);
+		producerService.sendMessage(tweet);
 		APIResponse response = new APIResponse(service.postNewTweet(tweet), "Tweet posted successfully.", null);
 		return new ResponseEntity<APIResponse>(response, HttpStatus.CREATED);
 	}

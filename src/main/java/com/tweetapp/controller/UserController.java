@@ -27,7 +27,8 @@ import com.tweetapp.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1.0/tweets")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = { "http://localhost:3000",
+		"http://elasticbeanstalk-us-east-1-911861301997.s3-website-us-east-1.amazonaws.com" })
 public class UserController {
 	@Autowired
 	UserService userService;
@@ -75,7 +76,8 @@ public class UserController {
 	}
 
 	@GetMapping("/refresh")
-	public ResponseEntity<APIResponse> refreshAccessToken(@CookieValue(value = "jwt", defaultValue = "") String jwtCookie) {
+	public ResponseEntity<APIResponse> refreshAccessToken(
+			@CookieValue(value = "jwt", defaultValue = "") String jwtCookie) {
 		String username = jwtTokenService.validateTokenAndGetUsername(jwtCookie);// .getValue());
 		APIResponse response = new APIResponse(userService.refreshLogin(username),
 				"Access token refreshed successfully.", null);

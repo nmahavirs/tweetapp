@@ -18,7 +18,8 @@ import com.tweetapp.filter.JwtRequestFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	private final String[] publicEndPoints = { "/**/register", "/**/login", "/**/forgot", "/**/refresh", "/**" };
+	private final String[] publicEndPoints = { "/**/register", "/**/login", "/**/forgot", "/**/refresh", "/actuator/**",
+			"/v3/api-docs/**", "/swagger-ui*/**", "/v2/api-docs/**", "/swagger-resources/**" };
 
 	@Autowired
 	JwtRequestFilter jwtRequestFilter;
